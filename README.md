@@ -1,7 +1,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-This project will be a basic implementation of an Game Engine using an ECS system and RAII
+This project will be a basic implementation of a Game Engine using an ECS system and RAII
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 

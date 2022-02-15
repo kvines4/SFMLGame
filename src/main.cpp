@@ -7,39 +7,118 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <fstream>
+#include <strstream>
+#include <vector>
+
+class Entity
+{
+public:
+	std::shared_ptr<sf::Vector2f> speed;
+	std::shared_ptr<sf::Shape>    shape;
+	std::shared_ptr<sf::Text>     name;
+
+	Entity(std::shared_ptr<sf::Text>        n,
+		   std::shared_ptr<sf::CircleShape> c,
+		   std::shared_ptr<sf::Vector2f>    s)
+		: speed(s)
+		, shape(c)
+		, name (n)
+	{
+	}
+
+	Entity(std::shared_ptr<sf::Text>           n,
+		   std::shared_ptr<sf::RectangleShape> c,
+		   std::shared_ptr<sf::Vector2f>       s)
+		: speed(s)
+		, shape(c)
+		, name (n)
+	{
+	}
+};
+
+///// globals /////
+
+const std::string configFilePath = "config.txt";
+
+// screen dimensions
+int wWidth  = 640;
+int wHeight = 480;
+
+// program font
+sf::Font  wFont;
+sf::Color wFontColor;
+int       wFontSize;
+
+// shapes container
+std::vector<Entity> shapes;
+
+bool loadConfig(const std::string & sFilename)
+{
+	std::ifstream fin(sFilename);
+	if (!fin.is_open())
+		return false;
+
+	while (!fin.eof())
+	{
+		// temp variables
+		std::string option;
+		std::string n;
+		int r, g, b;
+		int x, y, w, h, rad;
+		float sx, sy;
+
+		fin >> option;
+
+		if (option == "Window")
+		{
+			fin >> wWidth >> wHeight;
+		}
+		else if (option == "Font")
+		{
+			std::string wFontFile;
+
+			fin >> wFontFile >> wFontSize >> r >> g >> b;
+			wFontColor = sf::Color(r, g, b);
+
+			// attempt to load the font from a file
+			if (!wFont.loadFromFile(wFontFile))
+			{
+				// if we can't load the font, print an error to the error console and and exit
+				std::cerr << "Could not load font!" << std::endl;
+				exit(-1);
+			}
+		}
+		else if (option == "Rectangle")
+		{
+			fin >> n >> x >> y >> sx >> sy >> r >> g >> b >> w >> h;			// temp params
+			auto na = std::make_shared<sf::Text>(n, wFont, wFontSize);			// name text
+			auto sp = std::make_shared<sf::Vector2f>(sx, sy);					// speed
+			auto rs = std::make_shared<sf::RectangleShape>(sf::Vector2f(w, h));	// rectangle
+			rs->setFillColor(sf::Color(r, g, b));
+			rs->setPosition(x, y);
+			Entity shape(na, rs, sp);
+			shapes.push_back(shape);
+		}
+		else if (option == "Circle")
+		{
+			fin >> n >> x >> y >> sx >> sy >> r >> g >> b >> rad;				// temp params
+			auto na = std::make_shared<sf::Text>(n, wFont, wFontSize);			// name text
+			auto sp = std::make_shared<sf::Vector2f>(sx, sy);					// speed
+			auto cs = std::make_shared<sf::CircleShape>(rad);					// circle
+			cs->setFillColor(sf::Color(r, g, b));
+			cs->setPosition(x, y);
+			Entity shape(na, cs, sp);
+			shapes.push_back(shape);
+		}
+	}
+}
 
 int main(int argv, char* argc[])
 {
-	// create a new window of size 640 by 480 pixels
-	// top-left of the window is (0,0) and bottom right is (w,h)
-	const int wWidth = 640;
-	const int wHeight = 480;
+	loadConfig(configFilePath);
 
+	// top-left of the window is (0,0) and bottom right is (w,h) 
 	sf::RenderWindow window(sf::VideoMode(wWidth, wHeight), "SFML works!");
-
-	// lets make a shape that we will draw to the screen
-	sf::CircleShape circle(50);				// create a circle shape with radius 50
-	circle.setFillColor(sf::Color::Green);	// set the circle color to green
-	circle.setPosition(300.0f, 300.0f);		// set the top-left position of the circle
-	float circleMoveSpeed = -0.01f;			// we will use this to move the circle later
-
-	// lets load a font so we can display some text
-	sf::Font myFont;
-
-	// attempt to load the font from a file
-	if (!myFont.loadFromFile("fonts/arial.ttf"))
-	{
-		// if we can't load the font, print an error to the error console and and exit
-		std::cerr << "Could not load font!" << std::endl;
-		exit(-1);
-	}
-
-	// set up the text object that will be drawn to the screen
-	sf::Text text("Sample Text", myFont, 24);
-
-	// position the top-left corner of the text so that the text aligns on the bottom
-	// text character size is in pixels, so move the text up from the bottom by its height
-	text.setPosition(0, wHeight - (float)text.getCharacterSize());
 
 	// main loop - continues for each frame while window is open
 	while (window.isOpen())
@@ -59,24 +138,33 @@ int main(int argv, char* argc[])
 			{
 				// print the key that was pressed to the console
 				std::cout << "Key pressed with code = " << event.key.code << std::endl;
-
-				// example, what happens when x is pressed
-				if (event.key.code == sf::Keyboard::X)
-				{
-					// reverse the direction of the circle on the screen
-					circleMoveSpeed *= -1.0f;
-				}
 			}
 		}
 
-		// basic animation - move the circle each frame if it's still in the frame
-		circle.setPosition(circle.getPosition() + sf::Vector2f(circleMoveSpeed, circleMoveSpeed));
+		window.clear();
+		for (Entity e : shapes) 
+		{
+			sf::Vector2f cPos = e.shape->getPosition();
+			sf::FloatRect c   = e.shape->getLocalBounds();
 
-		// basic rendering function calls
-		window.clear();			// clear the window of anything previously drawn
-		window.draw(circle);	// draw the circle
-		window.draw(text);		// draw the text
-		window.display();		// call the window display function
+			// collision check
+			if (cPos.x < 0 || cPos.x + c.width > wWidth)
+				e.speed->x *= -1;
+			if (cPos.y < 0 || cPos.y + c.height > wHeight)
+				e.speed->y *= -1;
+
+			cPos += *e.speed;
+			sf::FloatRect t = e.name->getLocalBounds();
+			sf::Vector2f tPos(cPos.x + (c.width  / 2) - (t.width  / 2),
+				              cPos.y + (c.height / 2) - (t.height / 2));
+
+			e.shape->setPosition(cPos);
+			e.name->setPosition(tPos);
+
+			window.draw(*e.shape);
+			window.draw(*e.name);
+		}
+		window.display();
 	}
 
 	return 0;
