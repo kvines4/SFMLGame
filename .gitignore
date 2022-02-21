@@ -33,4 +33,6 @@
 *.pdb
 
 # build folders
-visualstudio/*
+visualstudio/Debug
+visualstudio/Release
+visualstudio/.vs
