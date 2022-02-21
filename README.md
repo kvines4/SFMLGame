@@ -1,7 +1,11 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-This project will be a basic implementation of a Game Engine using an ECS system and RAII
+This Game Engine is a basic ECS system that uses RAII concepts for memory management and the SFML graphics library as an easy start to get graphics up and running.
+
+Current itaration only supports a single scene, a single Entity Manager and some very basic components such as Transform, Shape, Collision, Score, Lifespan, and Input.
+
+A basic Geomerty Wars clone was implemented as a means of testing the concepts mentioned above.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
