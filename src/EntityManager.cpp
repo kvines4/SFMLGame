@@ -2,19 +2,27 @@
 
 EntityManager::EntityManager()
 {
+
 }
 
 void EntityManager::update()
 {
-	// iterate through all entities waiting to be added
+	// add all the entities that are pending
 	for (auto e : m_entitiesToAdd)
 	{
+		// add it to the vector of all entities
 		m_entities.push_back(e);
+
+		// add it to the entitiy map in the correct place
+		// map[key] will crete an element at 'key' if it does not already exist
+		//			therefore we are not in danger of adding to a vector that doesn't exist
 		m_entityMap[e->tag()].push_back(e);
 	}
+
+	// clear the temporary vector since we have added everything
 	m_entitiesToAdd.clear();
 
-	// remove dead entities from the vector of all entities 
+	// clean up dead entities in all vectors
 	removeDeadEntities(m_entities); 
 	m_totalEntities = m_entities.size();
 	// remove dead entities from each vector in the entity map 
