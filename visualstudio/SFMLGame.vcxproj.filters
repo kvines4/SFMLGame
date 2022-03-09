@@ -3,9 +3,16 @@
   <ItemGroup>
     <ClCompile Include="..\src\Vec2.cpp" />
     <ClCompile Include="..\src\EntityManager.cpp" />
-    <ClCompile Include="..\src\Game.cpp" />
     <ClCompile Include="..\src\main.cpp" />
     <ClCompile Include="..\src\Entity.cpp" />
+    <ClCompile Include="..\src\Assets.cpp" />
+    <ClCompile Include="..\src\Animation.cpp" />
+    <ClCompile Include="..\src\GameEngine.cpp" />
+    <ClCompile Include="..\src\Action.cpp" />
+    <ClCompile Include="..\src\Physics.cpp" />
+    <ClCompile Include="..\src\Scene.cpp" />
+    <ClCompile Include="..\src\Scene_Menu.cpp" />
+    <ClCompile Include="..\src\Scene_Play.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Common.h" />
@@ -13,6 +20,13 @@
     <ClInclude Include="..\src\Entity.h" />
     <ClInclude Include="..\src\Vec2.h" />
     <ClInclude Include="..\src\EntityManager.h" />
-    <ClInclude Include="..\src\Game.h" />
+    <ClInclude Include="..\src\Assets.h" />
+    <ClInclude Include="..\src\Animation.h" />
+    <ClInclude Include="..\src\GameEngine.h" />
+    <ClInclude Include="..\src\Action.h" />
+    <ClInclude Include="..\src\Physics.h" />
+    <ClInclude Include="..\src\Scene.h" />
+    <ClInclude Include="..\src\Scene_Menu.h" />
+    <ClInclude Include="..\src\Scene_Play.h" />
   </ItemGroup>
 </Project>

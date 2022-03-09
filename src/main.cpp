@@ -6,10 +6,10 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "Game.h"
+#include "GameEngine.h"
 
 int main()
 {
-	Game g("config.txt");
-	g.run() ;
+	GameEngine g("assets.txt");
+	g.run();
 }
