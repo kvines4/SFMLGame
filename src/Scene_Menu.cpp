@@ -63,45 +63,36 @@ void Scene_Menu::sDoAction(Action action)
 
 void Scene_Menu::sRender()
 {
-	// reset view to default coordinates
-	sf::View view = m_game->window().getView();
-	view.setCenter(m_game->window().getSize().x / 2.0f, m_game->window().getSize().y / 2.0f);
-	m_game->window().setView(view);
-
+	// clear the window
+	m_game->window().setView(m_game->window().getDefaultView());
 	m_game->window().clear(sf::Color(100, 100, 255));
 
-	m_menuText.setCharacterSize(64);
-	m_menuText.setColor(sf::Color::Black);
-
 	// Title
-	m_menuText.setPosition(sf::Vector2f(10, 10));
+	m_menuText.setCharacterSize(48);
 	m_menuText.setString(m_title);
+	m_menuText.setFillColor(sf::Color::Black);
+	m_menuText.setPosition(sf::Vector2f(10, 10));
 	m_game->window().draw(m_menuText);
 
 	// Levels
-	auto pos = sf::Vector2f(10, 150);
-	for (int i = 0; i < m_menuStrings.size(); i++)
+	for (size_t i = 0; i < m_menuStrings.size(); i++)
 	{
-		i == m_selectedMenuIndex 
-			? m_menuText.setColor(sf::Color::White)
-			: m_menuText.setColor(sf::Color::Black);
-
-		m_menuText.setPosition(pos);
 		m_menuText.setString(m_menuStrings[i]);
+		m_menuText.setFillColor(i == m_selectedMenuIndex ? sf::Color::White : sf::Color::Black);
+		m_menuText.setPosition(sf::Vector2f(10, 110 + i * 72));
 		m_game->window().draw(m_menuText);
-		pos.y += 80;
 	}
 
 	// hint
-	m_menuText.setCharacterSize(24);
+	m_menuText.setCharacterSize(20);
 	m_menuText.setColor(sf::Color::Black);
-
-	m_menuText.setPosition(sf::Vector2f(10, height() - 70));
-	m_menuText.setString("UP: W    DOWN: S    PLAY: D    BACK: ESC");
+	m_menuText.setString("UP: W     DOWN: S     PLAY: D     BACK: ESC");
+	m_menuText.setPosition(sf::Vector2f(10, 690));
 	m_game->window().draw(m_menuText);
 }
 
 void Scene_Menu::onEnd()
 {
+	m_hasEnded = true;
 	m_game->quit();
 }

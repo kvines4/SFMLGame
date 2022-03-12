@@ -10,9 +10,6 @@ public:
 	Vec2();
 	Vec2(float xin, float yin);
 
-	bool operator == (const Vec2& rhs) const;
-	bool operator != (const Vec2& rhs) const;
-
 	Vec2 operator +  (const Vec2& rhs) const;
 	Vec2 operator -  (const Vec2& rhs) const;
 	Vec2 operator /  (const float val) const;
@@ -23,5 +20,14 @@ public:
 	Vec2& operator *= (const float val);
 	Vec2& operator /= (const float val);
 
+	bool operator == (const Vec2& rhs) const;
+	bool operator != (const Vec2& rhs) const;
+
+	Vec2 abs();
+	float mag();
+	Vec2 norm();
+	Vec2 perp();
+	float dot(const Vec2& rhs);
+	float cross(const Vec2& rhs);
 	float dist(const Vec2& rhs) const;
 };

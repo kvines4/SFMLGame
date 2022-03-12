@@ -3,6 +3,8 @@
 This Game Engine is a basic Entity Component System (ECS) that uses RAII (Resource Acquisition Is Initialization) concepts for memory management and the SFML Graphics Library for Graphics. 
 This Game Engine uses data driven design to dynamically load custom configurations, assets, and level data. This means changes can be made to external files to tweak the gameplay at runtime without the need to recompile.
 
+A Mario/Megaman clone was implemented as a means of testing the concepts mentioned below.
+
 Features of the current iteration include:
 
 ## Input/Action System
@@ -50,7 +52,11 @@ Features of the current iteration include:
 
 - The current physics system uses Axis-Aligned Bounding Box (AABB) style collision detection.
 
-A Mario/Megaman clone was implemented as a means of testing the concepts mentioned above.
+## Draggable Entities
+
+- The dragable component allows the user to move any tile in the game with the mouse.
+- Dragging components happens in real time alongside the game physics system.
+- Currently being used as a function of the main game, but in future this can be used to create a level editor tool.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 

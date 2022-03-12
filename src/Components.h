@@ -80,8 +80,14 @@ public:
 class CState : public Component
 {
 public:
-	std::string state		  = "jumping";
-	std::string previousState = "jumping";
+	std::string state = "air";
 	CState() {}
 	CState(const std::string& s) : state(s) {}
+};
+
+class CDraggable : public Component
+{
+public:
+	bool dragging = false;
+	CDraggable() {}
 };

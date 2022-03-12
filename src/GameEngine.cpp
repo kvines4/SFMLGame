@@ -76,6 +76,36 @@ void GameEngine::sUserInput()
 			// look up the action and send the action to the scene
 			currentScene()->doAction(Action(currentScene()->getActionMap().at(event.key.code), actionType));
 		}
+
+		// mouse actions
+		auto mpos = sf::Mouse::getPosition(m_window);
+		Vec2 pos(mpos.x, mpos.y);
+				if (event.type == sf::Event::MouseButtonPressed)
+		{
+			switch (event.mouseButton.button)
+			{
+				case sf::Mouse::Left:   { currentScene()->doAction(Action("LEFT_CLICK",   "START", pos)); break; }
+				case sf::Mouse::Middle: { currentScene()->doAction(Action("MIDDLE_CLICK", "START", pos)); break; }
+				case sf::Mouse::Right:  { currentScene()->doAction(Action("RIGHT_CLICK",  "START", pos)); break; }
+				default: break;
+			}
+		}
+
+		if (event.type == sf::Event::MouseButtonReleased)
+		{
+			switch (event.mouseButton.button)
+			{
+				case sf::Mouse::Left:   { currentScene()->doAction(Action("LEFT_CLICK",   "END", pos)); break; }
+				case sf::Mouse::Middle: { currentScene()->doAction(Action("MIDDLE_CLICK", "END", pos)); break; }
+				case sf::Mouse::Right:  { currentScene()->doAction(Action("RIGHT_CLICK",  "END", pos)); break; }
+				default: break;
+			}
+		}
+
+		if (event.type == sf::Event::MouseMoved)
+		{
+			currentScene()->doAction(Action("MOUSE_MOVE", Vec2(event.mouseMove.x, event.mouseMove.y)));
+		}
 	}
 }
 
@@ -89,21 +119,28 @@ void GameEngine::changeScene(const std::string& sceneName, std::shared_ptr<Scene
 	{
 		if (m_sceneMap.find(sceneName) == m_sceneMap.end())
 		{
-			std::cerr << "Scene does not exist" << std::endl;
+			std::cerr << "Warning: Scene does not exist: " << sceneName << std::endl;
 			return;
 		}
-		else if (endCurrentScene)
-		{
-			m_sceneMap.erase(m_sceneMap.find(m_currentScene));
-		}
 	}
+	
+	if (endCurrentScene)
+	{
+		m_sceneMap.erase(m_sceneMap.find(m_currentScene));
+	}
+
 	m_currentScene = sceneName;
 }
 
 void GameEngine::update()
 {
+	if (!isRunning())       { return; }
+	if (m_sceneMap.empty()) { return; }
+
 	sUserInput();
-	currentScene()->simulate(1);
+	currentScene()->simulate(m_simulationSpeed);
+	currentScene()->sRender();
+	m_window.display();
 }
 
 void GameEngine::quit()

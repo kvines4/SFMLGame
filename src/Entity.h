@@ -12,7 +12,8 @@ typedef std::tuple<
 	CBoundingBox,
 	CAnimation,
 	CGravity,
-	CState
+	CState,
+	CDraggable
 > ComponentTuple;
 
 class Entity
@@ -46,6 +47,14 @@ public:
 		auto& component = getComponent<T>();
 		component = T(std::forward<TArgs>(mArgs)...);
 		component.has = true;
+		return component;
+	}
+
+	template <typename T, typename... TArgs>
+	T& removeComponent()
+	{
+		auto& component = getComponent<T>();
+		component.has = false;
 		return component;
 	}
 

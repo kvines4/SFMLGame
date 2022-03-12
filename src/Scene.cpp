@@ -35,8 +35,6 @@ size_t Scene::height() const
 void Scene::simulate(int i)
 {
 	update();
-	sRender();
-	m_game->window().display();
 }
 
 void Scene::doAction(Action action)

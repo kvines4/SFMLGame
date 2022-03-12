@@ -26,6 +26,9 @@ protected:
     const Vec2              m_gridSize = { 64, 64 };
     sf::Text                m_gridText;
 
+    sf::CircleShape         m_mouseShape;
+    std::shared_ptr<Entity> m_draggable;
+
     void init(const std::string& levelPath);
 
     void loadLevel(const std::string& filename);
@@ -40,9 +43,12 @@ public:
     void spawnBullet(std::shared_ptr<Entity> Entity);
 
     void sMovement();
+    void sDraggable();
     void sLifespan();
     void sCollision();
     void sAnimation();
+
+    void hitBlock(std::shared_ptr<Entity> Entity);
 
     void drawLine(const Vec2& p1, const Vec2& p2);
 
