@@ -10,6 +10,7 @@
 
 int main()
 {
+	PROFILE_FUNCTION();
 	GameEngine g("assets.txt");
 	g.run();
 }

@@ -42,6 +42,7 @@
     <ClInclude Include="..\src\EntityManager.h" />
     <ClInclude Include="..\src\GameEngine.h" />
     <ClInclude Include="..\src\Physics.h" />
+    <ClInclude Include="..\src\Profiler.h" />
     <ClInclude Include="..\src\Scene.h" />
     <ClInclude Include="..\src\Scene_Menu.h" />
     <ClInclude Include="..\src\Scene_Play.h" />

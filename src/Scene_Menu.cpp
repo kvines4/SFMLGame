@@ -14,6 +14,7 @@ Scene_Menu::Scene_Menu(GameEngine* gameEngine)
 
 void Scene_Menu::init()
 {
+	PROFILE_FUNCTION();
 	registerAction(sf::Keyboard::W,		"UP");
 	registerAction(sf::Keyboard::S,		"DOWN");
 	registerAction(sf::Keyboard::D,		"PLAY");
@@ -39,6 +40,7 @@ void Scene_Menu::update()
 
 void Scene_Menu::sDoAction(Action action)
 {
+	PROFILE_FUNCTION();
 	if (action.type() == "START")
 	{
 		if (action.name() == "UP")
@@ -63,6 +65,7 @@ void Scene_Menu::sDoAction(Action action)
 
 void Scene_Menu::sRender()
 {
+	PROFILE_FUNCTION();
 	// clear the window
 	m_game->window().setView(m_game->window().getDefaultView());
 	m_game->window().clear(sf::Color(100, 100, 255));

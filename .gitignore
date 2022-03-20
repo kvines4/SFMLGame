@@ -32,7 +32,10 @@
 *.app
 *.pdb
 
-# build folders
+# Build Folders
 visualstudio/Debug
 visualstudio/Release
 visualstudio/.vs
+
+# Misc
+bin/results.json

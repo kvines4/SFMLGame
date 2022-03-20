@@ -12,7 +12,7 @@ Vec2 Physics::GetOverlap(std::shared_ptr<Entity> a, std::shared_ptr<Entity> b)
 	Vec2 delta = (a->getComponent<CTransform>().pos - b->getComponent<CTransform>().pos).abs();
 
 	// calculate the vertical and horizontal overlaps
-	Vec2 boxSize = (a->getComponent<CBoundingBox>().halfSize + b->getComponent<CBoundingBox>().halfSize);
+	Vec2 boxSize = (a->getComponent<CBoundingBox>().halfSize + b->getComponent<CBoundingBox>().halfSize); 
 
 	// return if overlapping in both x&y axis, otherwise return 0
 	return Vec2(boxSize.x - delta.x, boxSize.y - delta.y);

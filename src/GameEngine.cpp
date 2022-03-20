@@ -10,10 +10,14 @@ GameEngine::GameEngine(const std::string& path)
 
 void GameEngine::init(const std::string& path)
 {
+	PROFILE_FUNCTION();
 	m_assets.loadFromFile(path);
 
-	m_window.create(sf::VideoMode(1280, 768), "Definitely Not Mario");
-	m_window.setFramerateLimit(60);
+	{
+		PROFILE_SCOPE("SFML Create Window");
+		m_window.create(sf::VideoMode(1280, 768), "Definitely Not Mario");
+		m_window.setFramerateLimit(60);
+	}
 
 	changeScene("MENU", std::make_shared<Scene_Menu>(this));
 }
@@ -35,6 +39,7 @@ sf::RenderWindow& GameEngine::window()
 
 void GameEngine::run()
 {
+	PROFILE_FUNCTION();
 	while (isRunning())
 	{
 		update();
@@ -43,9 +48,12 @@ void GameEngine::run()
 
 void GameEngine::sUserInput()
 {
+	PROFILE_FUNCTION();
 	sf::Event event;
 	while (m_window.pollEvent(event))
 	{
+		PROFILE_SCOPE("Poll Event Loop");
+
 		if (event.type == sf::Event::Closed)
 		{
 			quit();
@@ -67,6 +75,8 @@ void GameEngine::sUserInput()
 
 		if (event.type == sf::Event::KeyPressed || event.type == sf::Event::KeyReleased)
 		{
+			PROFILE_SCOPE("Key Event");
+
 			// if the current scene does not have an action associated with this key, skip the event
 			if (currentScene()->getActionMap().find(event.key.code) == currentScene()->getActionMap().end()) { continue; }
 
@@ -82,6 +92,8 @@ void GameEngine::sUserInput()
 		Vec2 pos(mpos.x, mpos.y);
 				if (event.type == sf::Event::MouseButtonPressed)
 		{
+			PROFILE_SCOPE("Mouse Pressed Event");
+
 			switch (event.mouseButton.button)
 			{
 				case sf::Mouse::Left:   { currentScene()->doAction(Action("LEFT_CLICK",   "START", pos)); break; }
@@ -93,6 +105,8 @@ void GameEngine::sUserInput()
 
 		if (event.type == sf::Event::MouseButtonReleased)
 		{
+			PROFILE_SCOPE("Mouse Released Event");
+
 			switch (event.mouseButton.button)
 			{
 				case sf::Mouse::Left:   { currentScene()->doAction(Action("LEFT_CLICK",   "END", pos)); break; }
@@ -104,6 +118,8 @@ void GameEngine::sUserInput()
 
 		if (event.type == sf::Event::MouseMoved)
 		{
+			PROFILE_SCOPE("Mouse Move Event");
+
 			currentScene()->doAction(Action("MOUSE_MOVE", Vec2(event.mouseMove.x, event.mouseMove.y)));
 		}
 	}
@@ -134,13 +150,18 @@ void GameEngine::changeScene(const std::string& sceneName, std::shared_ptr<Scene
 
 void GameEngine::update()
 {
+	PROFILE_FUNCTION();
 	if (!isRunning())       { return; }
 	if (m_sceneMap.empty()) { return; }
 
 	sUserInput();
 	currentScene()->simulate(m_simulationSpeed);
 	currentScene()->sRender();
-	m_window.display();
+
+	{
+		PROFILE_SCOPE("SFML Display");
+		m_window.display();
+	}
 }
 
 void GameEngine::quit()

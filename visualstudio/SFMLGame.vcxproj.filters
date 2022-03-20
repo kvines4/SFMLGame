@@ -28,5 +28,6 @@
     <ClInclude Include="..\src\Scene.h" />
     <ClInclude Include="..\src\Scene_Menu.h" />
     <ClInclude Include="..\src\Scene_Play.h" />
+    <ClInclude Include="..\src\Profiler.h" />
   </ItemGroup>
 </Project>

@@ -7,6 +7,7 @@ EntityManager::EntityManager()
 
 void EntityManager::update()
 {
+	PROFILE_FUNCTION();
 	// add all the entities that are pending
 	for (auto e : m_entitiesToAdd)
 	{

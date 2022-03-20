@@ -15,6 +15,7 @@ Scene_Play::Scene_Play(GameEngine* gameEngine, const std::string& levelPath)
 
 void Scene_Play::init(const std::string& levelPath)
 {
+	PROFILE_FUNCTION();
 	registerAction(sf::Keyboard::W,		 "JUMP");
 	registerAction(sf::Keyboard::A,		 "LEFT");
 	registerAction(sf::Keyboard::D,		 "RIGHT");
@@ -46,6 +47,7 @@ Vec2 Scene_Play::gridToMidPixel(float gridX, float gridY, std::shared_ptr<Entity
 
 void Scene_Play::loadLevel(const std::string& filename)
 {
+	PROFILE_FUNCTION();
 	// reset the entity manager every time we load a level
 	m_entityManager = EntityManager();
 
@@ -89,6 +91,7 @@ void Scene_Play::loadLevel(const std::string& filename)
 
 void Scene_Play::spawnPlayer()
 {
+	PROFILE_FUNCTION();
 	if (m_player) { m_player->destroy(); }
 
 	m_player = m_entityManager.addEntity("player");
@@ -99,16 +102,6 @@ void Scene_Play::spawnPlayer()
 	m_player->addComponent<CGravity>(m_playerConfig.GRAVITY);
 	m_player->addComponent<CState>("air");
 	m_player->addComponent<CDraggable>();
-}
-
-void Scene_Play::spawnBullet(std::shared_ptr<Entity> entity)
-{
-	auto& transform = entity->getComponent<CTransform>();
-	auto bullet	    = m_entityManager.addEntity("bullet");
-	auto& t = bullet->addComponent<CTransform>(transform.pos, Vec2(12 * transform.scale.x, 0), transform.scale, 0.0f);
-	bullet->addComponent<CAnimation>(m_game->assets().getAnimation(m_playerConfig.WEAPON), true);
-	bullet->addComponent<CBoundingBox>(bullet->getComponent<CAnimation>().animation.getSize());
-	bullet->addComponent<CLifespan>(60);
 }
 
 void Scene_Play::hitBlock(std::shared_ptr<Entity> entity)
@@ -131,8 +124,20 @@ void Scene_Play::hitBlock(std::shared_ptr<Entity> entity)
 	}
 }
 
+void Scene_Play::spawnBullet(std::shared_ptr<Entity> entity)
+{ 
+	PROFILE_FUNCTION();
+	auto& transform = entity->getComponent<CTransform>();
+	auto bullet	    = m_entityManager.addEntity("bullet");
+	auto& t = bullet->addComponent<CTransform>(transform.pos, Vec2(12 * transform.scale.x, 0), transform.scale, 0.0f);
+	bullet->addComponent<CAnimation>(m_game->assets().getAnimation(m_playerConfig.WEAPON), true);
+	bullet->addComponent<CBoundingBox>(bullet->getComponent<CAnimation>().animation.getSize());
+	bullet->addComponent<CLifespan>(60);
+}
+
 void Scene_Play::update()
 {
+	PROFILE_FUNCTION();
 	m_entityManager.update();
 
 	if (!m_paused)
@@ -147,6 +152,7 @@ void Scene_Play::update()
 
 void Scene_Play::sMovement()
 {
+	PROFILE_FUNCTION();
 	auto& pTransform = m_player->getComponent<CTransform>();
 	auto& pInput	 = m_player->getComponent<CInput>();
 	auto& pState	 = m_player->getComponent<CState>();
@@ -195,6 +201,7 @@ void Scene_Play::sMovement()
 
 void Scene_Play::sDraggable()
 {
+	PROFILE_FUNCTION();
 	// update dragging entity
 	if (m_draggable)
 	{
@@ -211,6 +218,7 @@ void Scene_Play::sDraggable()
 
 void Scene_Play::sLifespan()
 {
+	PROFILE_FUNCTION();
 	for (auto e : m_entityManager.getEntities())
 	{
 		if (!e->hasComponent<CLifespan>()) { continue; }
@@ -229,6 +237,7 @@ void Scene_Play::sLifespan()
 
 void Scene_Play::sCollision()
 {
+	PROFILE_FUNCTION();
 	auto& tiles			= m_entityManager.getEntities("tile");
 	auto& bullets		= m_entityManager.getEntities("bullet");
 
@@ -237,70 +246,78 @@ void Scene_Play::sCollision()
 	auto& pBoundingBox	= m_player->getComponent<CBoundingBox>();
 	auto& pInput		= m_player->getComponent<CInput>();
 
-	for (auto bullet : bullets)
 	{
-		for (auto tile : tiles)
+		PROFILE_SCOPE("Bullet/Tile Collisions");
+
+		for (auto bullet : bullets)
 		{
-			if (!tile->hasComponent<CBoundingBox>()) { continue; }
-
-			// if we aren't overlapping, continue to next tile
-			Vec2 overlap = Physics::GetOverlap(bullet, tile);
-			if (overlap.x < 0 || overlap.y < 0) { continue; }
-
-			bullet->destroy();
-			if (tile->getComponent<CAnimation>().animation.getName() == "Brick")
+			for (auto tile : tiles)
 			{
-				tile->addComponent<CAnimation>(m_game->assets().getAnimation("Explosion"), false);
-				tile->removeComponent<CBoundingBox>();
+				if (!tile->hasComponent<CBoundingBox>()) { continue; }
+
+				// if we aren't overlapping, continue to next tile
+				Vec2 overlap = Physics::GetOverlap(bullet, tile);
+				if (overlap.x < 0 || overlap.y < 0) { continue; }
+
+				bullet->destroy();
+				if (tile->getComponent<CAnimation>().animation.getName() == "Brick")
+				{
+					tile->addComponent<CAnimation>(m_game->assets().getAnimation("Explosion"), false);
+					tile->removeComponent<CBoundingBox>();
+				}
 			}
 		}
 	}
 
-	pState.state = "air";
-	for (auto tile : tiles)
 	{
-		// if we aren't overlapping, continue to next tile
-		Vec2 overlap = Physics::GetOverlap(m_player, tile);
-		if (overlap.x < 0 || overlap.y < 0) { continue; }
+		PROFILE_SCOPE("Player/Tile Collisions");
 
-		Vec2 prevOverlap = Physics::GetPreviousOverlap(m_player, tile);
-		auto& tTransform = tile->getComponent<CTransform>();
-		auto& tAnimation = tile->getComponent<CAnimation>();
-
-		if (tAnimation.animation.getName() == "Pole" ||
-			tAnimation.animation.getName() == "PoleTop")
+		pState.state = "air";
+		for (auto tile : tiles)
 		{
-			// you win. restart level.
-			m_game->changeScene("PLAY", std::make_shared<Scene_Play>(m_game, "level1.txt"));
-			return;
-		}
+			// if we aren't overlapping, continue to next tile
+			Vec2 overlap = Physics::GetOverlap(m_player, tile);
+			if (overlap.x < 0 || overlap.y < 0) { continue; }
 
-		Vec2 diff = pTransform.pos - tTransform.pos;
-		Vec2 shift(0, 0);
-		// if there was a non-zero previous x overlap, then the collision came from y
-		if (prevOverlap.x > 0)
-		{
-			shift.y += diff.y > 0 ? overlap.y : -overlap.y;
-			pTransform.velocity.y = 0;
-			if (diff.y < 0)
+			Vec2 prevOverlap = Physics::GetPreviousOverlap(m_player, tile);
+			auto& tTransform = tile->getComponent<CTransform>();
+			auto& tAnimation = tile->getComponent<CAnimation>();
+
+			if (tAnimation.animation.getName() == "Pole" ||
+				tAnimation.animation.getName() == "PoleTop")
 			{
-				pState.state = "ground";
+				// you win. restart level.
+				m_game->changeScene("PLAY", std::make_shared<Scene_Play>(m_game, "level1.txt"));
+				return;
+			}
+
+			Vec2 diff = pTransform.pos - tTransform.pos;
+			Vec2 shift(0, 0);
+			// if there was a non-zero previous x overlap, then the collision came from y
+			if (prevOverlap.x > 0)
+			{
+				shift.y += diff.y > 0 ? overlap.y : -overlap.y;
+				pTransform.velocity.y = 0;
+				if (diff.y < 0)
+				{
+					pState.state = "ground";
+					pTransform.pos += (tTransform.velocity);
+				}
+				else
+				{
+					hitBlock(tile);
+				}
+			}
+			// if there was a non-zero previous y overlap, then the collision came from y
+			else if (prevOverlap.y > 0)
+			{
+				shift.x += diff.x > 0 ? overlap.x : -overlap.x;
+				pTransform.velocity.x = 0;
 				pTransform.pos += (tTransform.velocity);
-			}
-			else
-			{
-				hitBlock(tile);
-			}
-		}
-		// if there was a non-zero previous y overlap, then the collision came from y
-		else if (prevOverlap.y > 0)
-		{
-			shift.x += diff.x > 0 ? overlap.x : -overlap.x;
-			pTransform.velocity.x = 0;
-			pTransform.pos += (tTransform.velocity);
 
+			}
+			pTransform.pos += shift;
 		}
-		pTransform.pos += shift;
 	}
 
 	// respawn if lower than bottom of screen
@@ -311,6 +328,7 @@ void Scene_Play::sCollision()
 
 void Scene_Play::sDoAction(Action action)
 {
+	PROFILE_FUNCTION();
 	auto& pInput	 = m_player->getComponent<CInput>();
 	auto& pState	 = m_player->getComponent<CState>();
 	auto& pTransform = m_player->getComponent<CTransform>();
@@ -389,6 +407,7 @@ void Scene_Play::sDoAction(Action action)
 
 void Scene_Play::sAnimation()
 {
+	PROFILE_FUNCTION();
 	auto& pState	 = m_player->getComponent<CState>();
 	auto& pAnimation = m_player->getComponent<CAnimation>();
 
@@ -440,20 +459,28 @@ void Scene_Play::drawLine(const Vec2& p1, const Vec2& p2)
 
 void Scene_Play::sRender()
 {
-	// set the viewport of the window to be centered on the player if it's far enough right
-	auto& pPos = m_player->getComponent<CTransform>().pos;
-	float windowCenterX = std::max(m_game->window().getSize().x / 2.0f, pPos.x);
-	sf::View view = m_game->window().getView();
-	view.setCenter(windowCenterX, m_game->window().getSize().y - view.getCenter().y);
-	m_game->window().setView(view);
+	PROFILE_FUNCTION();
 
 	// color the background darker so you know that the game is paused
 	if (!m_paused) { m_game->window().clear(sf::Color(100, 100, 255)); }
 	else { m_game->window().clear(sf::Color(50, 50, 150)); }
 
+	{
+		PROFILE_SCOPE("Camera View");
+
+		// set the viewport of the window to be centered on the player if it's far enough right
+		auto& pPos = m_player->getComponent<CTransform>().pos;
+		float windowCenterX = std::max(m_game->window().getSize().x / 2.0f, pPos.x);
+		sf::View view = m_game->window().getView();
+		view.setCenter(windowCenterX, m_game->window().getSize().y - view.getCenter().y);
+		m_game->window().setView(view);
+	}
+
 	// draw all Entity textures / animations
 	if (m_drawTextures)
 	{
+		PROFILE_SCOPE("Draw Textures");
+
 		for (auto e : m_entityManager.getEntities())
 		{
 			if (e->hasComponent<CAnimation>()) {
@@ -472,6 +499,8 @@ void Scene_Play::sRender()
 	// draw the grid so that we can easily debug
 	if (m_drawGrid)
 	{
+		PROFILE_SCOPE("Draw Grid");
+
 		float leftX = m_game->window().getView().getCenter().x - width() / 2;
 		float rightX = leftX + width() + m_gridSize.x;
 		float nextGridX = leftX - ((int)leftX % (int)m_gridSize.x);
@@ -499,6 +528,8 @@ void Scene_Play::sRender()
 	// draw all Entity collision bounding boxes so that we can easily debug
 	if (m_drawCollisions)
 	{
+		PROFILE_SCOPE("Draw Collisions");
+
 		for (auto e : m_entityManager.getEntities())
 		{
 			if (e->hasComponent<CBoundingBox>())
