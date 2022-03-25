@@ -27,7 +27,6 @@ protected:
 
 public:
 
-    Scene();
     Scene(GameEngine* gameEngine);
 
     virtual void update() = 0;

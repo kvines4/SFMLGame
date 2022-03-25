@@ -39,7 +39,6 @@ sf::RenderWindow& GameEngine::window()
 
 void GameEngine::run()
 {
-	PROFILE_FUNCTION();
 	while (isRunning())
 	{
 		update();
@@ -56,11 +55,14 @@ void GameEngine::sUserInput()
 
 		if (event.type == sf::Event::Closed)
 		{
+			PROFILE_SCOPE("Close Event");
 			quit();
 		}
 
 		if (event.type == sf::Event::KeyPressed)
 		{
+			PROFILE_SCOPE("Screenshot Event");
+
 			if (event.key.code == sf::Keyboard::X)
 			{
 				sf::Texture texture;
@@ -68,7 +70,7 @@ void GameEngine::sUserInput()
 				texture.update(m_window);
 				if (texture.copyToImage().saveToFile("test.png"))
 				{
-					std::cout << "scrennshot saved to " << "test.png" << std::endl;
+					std::cout << "screenshot saved to " << "test.png" << std::endl;
 				}
 			}
 		}
@@ -88,12 +90,12 @@ void GameEngine::sUserInput()
 		}
 
 		// mouse actions
-		auto mpos = sf::Mouse::getPosition(m_window);
-		Vec2 pos(mpos.x, mpos.y);
-				if (event.type == sf::Event::MouseButtonPressed)
+		if (event.type == sf::Event::MouseButtonPressed)
 		{
 			PROFILE_SCOPE("Mouse Pressed Event");
 
+			auto mpos = sf::Mouse::getPosition(m_window);
+			Vec2 pos(mpos.x, mpos.y);
 			switch (event.mouseButton.button)
 			{
 				case sf::Mouse::Left:   { currentScene()->doAction(Action("LEFT_CLICK",   "START", pos)); break; }
@@ -107,6 +109,8 @@ void GameEngine::sUserInput()
 		{
 			PROFILE_SCOPE("Mouse Released Event");
 
+			auto mpos = sf::Mouse::getPosition(m_window);
+			Vec2 pos(mpos.x, mpos.y);
 			switch (event.mouseButton.button)
 			{
 				case sf::Mouse::Left:   { currentScene()->doAction(Action("LEFT_CLICK",   "END", pos)); break; }

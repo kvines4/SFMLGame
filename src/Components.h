@@ -44,7 +44,7 @@ public:
 	bool right		= false;
 	bool shoot		= false;
 	bool canShoot	= true;
-	bool canJump	= false;
+	bool canJump	= true;
 
 	CInput() {}
 };

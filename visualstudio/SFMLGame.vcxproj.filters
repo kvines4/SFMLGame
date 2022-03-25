@@ -11,6 +11,7 @@
     <ClCompile Include="..\src\Action.cpp" />
     <ClCompile Include="..\src\Physics.cpp" />
     <ClCompile Include="..\src\Scene.cpp" />
+    <ClCompile Include="..\src\EntityMemoryPool.cpp" />
     <ClCompile Include="..\src\Scene_Menu.cpp" />
     <ClCompile Include="..\src\Scene_Play.cpp" />
   </ItemGroup>
@@ -26,8 +27,9 @@
     <ClInclude Include="..\src\Action.h" />
     <ClInclude Include="..\src\Physics.h" />
     <ClInclude Include="..\src\Scene.h" />
+    <ClInclude Include="..\src\Profiler.h" />
+    <ClInclude Include="..\src\EntityMemoryPool.h" />
     <ClInclude Include="..\src\Scene_Menu.h" />
     <ClInclude Include="..\src\Scene_Play.h" />
-    <ClInclude Include="..\src\Profiler.h" />
   </ItemGroup>
 </Project>
