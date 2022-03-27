@@ -1,7 +1,10 @@
 #pragma once
 
-#include "Common.h"
+#include <SFML/Graphics.hpp>
+#include <string>
 #include <vector>
+
+#include "Vec2.h"
 
 class Animation
 {

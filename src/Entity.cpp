@@ -1,4 +1,5 @@
 #include "Entity.h"
+
 #include "EntityMemoryPool.h"
 
 Entity::Entity(const size_t id)

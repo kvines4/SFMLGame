@@ -1,10 +1,10 @@
 #include "Scene_Play.h"
-#include "Common.h"
-#include "Physics.h"
-#include "Assets.h"
+
+#include <iostream>
+
 #include "GameEngine.h"
-#include "Components.h"
-#include "Action.h"
+#include "Physics.h"
+#include "Profiler.h"
 
 Scene_Play::Scene_Play(GameEngine* gameEngine, const std::string& levelPath)
 	: Scene(gameEngine)

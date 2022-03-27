@@ -1,6 +1,8 @@
 #pragma once
 
-#include "Common.h"
+#include <string>
+
+#include "Vec2.h"
 
 class Action
 {

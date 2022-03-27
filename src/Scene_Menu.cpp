@@ -1,10 +1,8 @@
 #include "Scene_Menu.h"
-#include "Scene_Play.h"
-#include "Common.h"
-#include "Assets.h"
+
 #include "GameEngine.h"
-#include "Components.h"
-#include "Action.h"
+#include "Profiler.h"
+#include "Scene_Play.h"
 
 Scene_Menu::Scene_Menu(GameEngine* gameEngine)
 	: Scene(gameEngine)

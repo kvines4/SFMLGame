@@ -1,7 +1,11 @@
 #include "GameEngine.h"
-#include "Assets.h"
-#include "Scene_Play.h"
+
+#include <iostream>
+
+#include "Profiler.h"
+#include "Scene.h"
 #include "Scene_Menu.h"
+#include "Scene_Play.h"
 
 GameEngine::GameEngine(const std::string& path)
 {

@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Common.h"
-#include "Components.h"
 #include "EntityMemoryPool.h"
 
 class Entity

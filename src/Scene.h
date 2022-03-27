@@ -1,10 +1,7 @@
 #pragma once
 
-#include "Common.h"
 #include "Action.h"
 #include "EntityManager.h"
-
-#include <memory>
 
 class GameEngine;
 

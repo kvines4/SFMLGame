@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Common.h"
 #include "Entity.h"
 
 namespace Physics

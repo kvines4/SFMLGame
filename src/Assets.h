@@ -1,6 +1,9 @@
 #pragma once
 
-#include "Common.h"
+#include <SFML/Graphics.hpp>
+#include <map>
+#include <string>
+
 #include "Animation.h"
 
 class Assets

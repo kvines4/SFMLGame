@@ -3,12 +3,9 @@
 #include <chrono>
 #include <fstream>
 #include <mutex>
-#include <map>
-#include <string>
-#include <algorithm>
 
 #define PROFILING 1
-#ifdef PROFILING
+#ifdef  PROFILING
 #define PROFILE_SCOPE(name) \
 		ProfileTimer timer##__LINE__(name)
 #define PROFILE_FUNCTION() \

@@ -1,11 +1,6 @@
 #pragma once
 
-#include "Common.h"
 #include "Scene.h"
-#include <map>
-#include <memory>
-
-#include "EntityManager.h"
 
 class Scene_Play : public Scene
 {

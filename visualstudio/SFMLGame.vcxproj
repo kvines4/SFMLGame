@@ -37,7 +37,6 @@
     <ClInclude Include="..\src\Action.h" />
     <ClInclude Include="..\src\Animation.h" />
     <ClInclude Include="..\src\Assets.h" />
-    <ClInclude Include="..\src\Common.h" />
     <ClInclude Include="..\src\Components.h" />
     <ClInclude Include="..\src\Entity.h" />
     <ClInclude Include="..\src\EntityManager.h" />

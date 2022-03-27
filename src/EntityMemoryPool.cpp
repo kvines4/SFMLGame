@@ -1,4 +1,5 @@
 #include "EntityMemoryPool.h"
+
 #include "Entity.h"
 
 EntityMemoryPool::EntityMemoryPool(size_t maxEntities)

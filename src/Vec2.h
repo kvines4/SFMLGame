@@ -10,11 +10,10 @@ public:
 	Vec2();
 	Vec2(float xin, float yin);
 
-	Vec2 operator +  (const Vec2& rhs) const;
-	Vec2 operator -  (const Vec2& rhs) const;
-	Vec2 operator /  (const float val) const;
-	Vec2 operator *  (const float val) const;
-
+	Vec2 operator +   (const Vec2& rhs) const;
+	Vec2 operator -   (const Vec2& rhs) const;
+	Vec2 operator /   (const float val) const;
+	Vec2 operator *   (const float val) const;
 	Vec2& operator += (const Vec2& rhs);
 	Vec2& operator -= (const Vec2& rhs);
 	Vec2& operator *= (const float val);

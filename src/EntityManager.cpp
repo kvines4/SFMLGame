@@ -1,5 +1,7 @@
 #include "EntityManager.h"
 
+#include "Profiler.h"
+
 EntityManager::EntityManager()
 {
 

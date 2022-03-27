@@ -1,5 +1,10 @@
 #include "Assets.h"
+
 #include <cassert>
+#include <fstream>
+#include <iostream>
+
+#include "Profiler.h"
 
 Assets::Assets()
 {

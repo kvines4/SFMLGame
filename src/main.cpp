@@ -4,9 +4,8 @@
  * Contact: kvines4@outlook.com
  */
 
-#include <SFML/Graphics.hpp>
-
 #include "GameEngine.h"
+#include "Profiler.h"
 
 int main()
 {

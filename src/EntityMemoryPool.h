@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Common.h"
+#include <vector>
+
 #include "Components.h"
 
 enum class Tag { player, bullet, tile, decoration, };

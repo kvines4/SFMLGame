@@ -1,7 +1,9 @@
 #pragma once
 
+#include <string>
+
 #include "Animation.h"
-#include "Assets.h"
+#include "Vec2.h"
 
 class Component
 {
