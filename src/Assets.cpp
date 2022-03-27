@@ -8,6 +8,7 @@ Assets::Assets()
 
 void Assets::loadFromFile(const std::string& path)
 {
+	PROFILE_FUNCTION();
 	std::ifstream file(path);
 	std::string str;
 	while (file.good())
@@ -42,6 +43,7 @@ void Assets::loadFromFile(const std::string& path)
 
 void Assets::addTexture(const std::string& textureName, const std::string& path, bool smooth)
 {
+	PROFILE_FUNCTION();
 	m_textureMap[textureName] = sf::Texture();
 
 	if (!m_textureMap[textureName].loadFromFile(path))
@@ -64,6 +66,7 @@ const sf::Texture& Assets::getTexture(const std::string& textureName) const
 
 void Assets::addAnimation(const std::string& animationName, const std::string& textureName, size_t frameCount, size_t speed)
 {
+	PROFILE_FUNCTION();
 	m_animationMap[animationName] = Animation(animationName, getTexture(textureName), frameCount, speed);
 
 	std::cout << "Loaded Animation: " << animationName << std::endl;
@@ -77,6 +80,7 @@ const Animation& Assets::getAnimation(const std::string& animationName) const
 
 void Assets::addFont(const std::string& fontName, const std::string& path)
 {
+	PROFILE_FUNCTION();
 	m_fontMap[fontName] = sf::Font();
 
 	if (!m_fontMap[fontName].loadFromFile(path))

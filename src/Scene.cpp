@@ -1,11 +1,6 @@
 #include "Scene.h"
 #include "GameEngine.h"
 
-Scene::Scene()
-{
-
-}
-
 Scene::Scene(GameEngine* gameEngine)
 	: m_game(gameEngine)
 {
@@ -35,8 +30,6 @@ size_t Scene::height() const
 void Scene::simulate(int i)
 {
 	update();
-	sRender();
-	m_game->window().display();
 }
 
 void Scene::doAction(Action action)

@@ -7,6 +7,7 @@ EntityManager::EntityManager()
 
 void EntityManager::update()
 {
+	PROFILE_FUNCTION();
 	// add all the entities that are pending
 	for (auto e : m_entitiesToAdd)
 	{
@@ -16,7 +17,7 @@ void EntityManager::update()
 		// add it to the entitiy map in the correct place
 		// map[key] will crete an element at 'key' if it does not already exist
 		//			therefore we are not in danger of adding to a vector that doesn't exist
-		m_entityMap[e->tag()].push_back(e);
+		m_entityMap[e.tag()].push_back(e);
 	}
 
 	// clear the temporary vector since we have added everything
@@ -39,15 +40,15 @@ void EntityManager::removeDeadEntities(EntityVec& vec)
 		std::remove_if(
 			vec.begin(),
 			vec.end(),
-			[](std::shared_ptr<Entity>& e) { return !e->isActive(); }),
+			[](Entity e) { return !e.isActive(); }),
 		vec.end());
 }
 
-std::shared_ptr<Entity> EntityManager::addEntity(const std::string& tag)
+Entity EntityManager::addEntity(const Tag tag)
 {
-	auto entity = std::shared_ptr<Entity>(new Entity(m_totalEntities++, tag));
-	m_entitiesToAdd.push_back(entity);
-	return entity;
+	Entity e = EntityMemoryPool::Instance().addEntity(tag);
+	m_entitiesToAdd.push_back(e);
+	return e;
 }
 
 const EntityVec& EntityManager::getEntities()
@@ -55,7 +56,7 @@ const EntityVec& EntityManager::getEntities()
 	return m_entities;
 }
 
-const EntityVec& EntityManager::getEntities(const std::string& tag)
+const EntityVec& EntityManager::getEntities(const Tag tag)
 {
 	return m_entityMap[tag];
 }

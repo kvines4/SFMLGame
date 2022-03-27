@@ -17,14 +17,14 @@ class Scene_Play : public Scene
 
 protected:
 
-    std::shared_ptr<Entity> m_player;
-    std::string             m_levelPath;
-    PlayerConfig            m_playerConfig;
-    bool                    m_drawTextures = true;
-    bool                    m_drawCollisions = false;
-    bool                    m_drawGrid = false;
-    const Vec2              m_gridSize = { 64, 64 };
-    sf::Text                m_gridText;
+    bool            m_drawTextures   = true;
+    bool            m_drawCollisions = false;
+    bool            m_drawGrid       = false;
+    const Vec2      m_gridSize       = { 64, 64 };
+    std::string     m_levelPath;
+    PlayerConfig    m_playerConfig;
+    sf::Text        m_gridText;
+    sf::CircleShape m_mouseShape;
 
     void init(const std::string& levelPath);
 
@@ -34,15 +34,18 @@ public:
 
     Scene_Play(GameEngine* gameEngine, const std::string& levelPath);
 
-    Vec2 gridToMidPixel(float gridX, float gridY, std::shared_ptr<Entity> entity);
+    Vec2 gridToMidPixel(float gridX, float gridY, Entity entity);
 
     void spawnPlayer();
-    void spawnBullet(std::shared_ptr<Entity> Entity);
+    void spawnBullet(Entity Entity);
 
     void sMovement();
+    void sDraggable();
     void sLifespan();
     void sCollision();
     void sAnimation();
+
+    void hitBlock(Entity Entity);
 
     void drawLine(const Vec2& p1, const Vec2& p2);
 

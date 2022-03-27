@@ -2,64 +2,51 @@
 
 #include "Common.h"
 #include "Components.h"
-
-class EntityManager;
-
-typedef std::tuple<
-	CTransform,
-	CLifespan,
-	CInput,
-	CBoundingBox,
-	CAnimation,
-	CGravity,
-	CState
-> ComponentTuple;
+#include "EntityMemoryPool.h"
 
 class Entity
 {
-	friend class EntityManager;
-
-	bool			m_active	= true;
-	std::string		m_tag		= "Default";
-	size_t			m_id		= 0;
-	ComponentTuple  m_components;
+	friend class EntityMemoryPool;
+	
+	size_t m_id = 0;
 
 	// constructor is private so we can never create
-	// entities outside the EntityManager which has friend access
-	Entity(const size_t id, const std::string& tag);
+	// entities outside the EntityMemoryPool which has friend access
+	Entity(const size_t id);
 
 public:
-	void				destroy();
-	size_t				id()		const;
-	bool				isActive()	const;
-	const std::string&	tag()		const;
+	void destroy();
+	size_t id()	const;
+	bool isActive()	const;
+	const Tag tag() const;
 
 	template <typename T>
 	bool hasComponent() const
 	{
-		return getComponent<T>().has;
+		return EntityMemoryPool::Instance().hasComponent<T>(m_id);
 	}
 
 	template <typename T, typename... TArgs>
 	T& addComponent(TArgs&&... mArgs)
 	{
-		auto& component = getComponent<T>();
-		component = T(std::forward<TArgs>(mArgs)...);
-		component.has = true;
-		return component;
+		return EntityMemoryPool::Instance().addComponent<T>(m_id, mArgs...);
+	}
+
+	template <typename T>
+	T& removeComponent()
+	{
+		return EntityMemoryPool::Instance().removeComponent<T>(m_id);
 	}
 
 	template <typename T>
 	T& getComponent()
 	{
-		return std::get<T>(m_components);
+		return EntityMemoryPool::Instance().getComponent<T>(m_id);
 	}
-
 
 	template <typename T>
 	const T& getComponent() const
 	{
-		return std::get<T>(m_components);
+		return EntityMemoryPool::Instance().getComponent<T>(m_id);
 	}
-
 };
