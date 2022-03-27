@@ -71,17 +71,17 @@ Currently a basic Mario/Megaman clone has been implemented as a means of testing
 
 ## Memory Pooling
 
-- Using ECS style systems usually means we are (usually) only doing calculations on one type of component at a time. We can use this fact to speed up our code by **storing components contiguously instead of whole entities contiguously**.
+- Using ECS style systems means we are (usually) only doing calculations on one type of component at a time. We can use this fact to speed up our code by **storing components contiguously instead of whole entities contiguously**.
 - Memory pooling in this engine works by reserving a series of vectors for each component type as well as vectors for active status and tags. This means that when we look up an entity's component, several components will be cached, **reducing the amount of cache missing that occur on each consecutive lookup**.
-- When the Memory Pool is instanciated, we reserve space for a estimated maximum number of entities. Several benefits come from this such as no longer needing to allocate memory on creation of entities and their components, as well as freeing memory when they are removed.
+- When the Memory Pool is instantiated, we reserve space for a estimated maximum number of entities. Several benefits come from this such as no longer needing to allocate memory on creation of entities and their components, as well as freeing memory when they are removed.
 
-  This works because we can simply mark the Entity status and the component's 'has' value to 'false' and whatever data is contained will be ignored. We can then reset the component values when a new entitiy is added into its place.
+  This works because we can simply mark the Entity and the Component's status to 'false' and whatever data is contained will be ignored. We can then reset the component values when a new entity is added into its place.
 
 - Another benefit of this implementation is that Entities are now just a wrapper around a size_t Entity_ID with some included functions.
 - This means:
   1. We can now pass entities by value instead of by reference.
   2. We no longer need to dereference smart pointers.
-  3. We haven't changed the way out entities work, simply where the information happens to be   stored.
+  3. We haven't changed the way out entities work, simply where the information happens to be stored.
   
   <br>
   Without making any changes to the game implementation memory pooling has made the engine run a whole order of magnitude faster.
@@ -104,7 +104,7 @@ Currently a basic Mario/Megaman clone has been implemented as a means of testing
 Profiling is important for finding areas of our code that are taking longer than we expect to run.
 Visual Studio does have its own profiling tools, but by coding our own, we can make it compatible with tools such as Google Chome's Tracing visualiser.
 
-First we define a Profiler class that starts a timer when its instanciated, and ends a timer/prints the results when its destructed.
+First we define a `Profiler` class that starts a timer when its instantiated, and ends a timer/prints the results when its destructed.
 
 Using the following thread safe write function, we can format our results into a JSON format that Chrome Tracer understands.
 ```C++
@@ -147,18 +147,19 @@ Now anywhere in our code we can use the following syntax to either time a whole 
 ```C++
 void Scene_Type_1::system1()
 {
-	PROFILE_FUNCTION();
+  PROFILE_FUNCTION();
 
-	{
-		PROFILE_SCOPE("Scope1");
+  {
+    PROFILE_SCOPE("Scope1");
 
-		for (auto o : objectsVector)
-		{
-          PROFILE_SCOPE("Loop iteration");
-    	  // do something here
-		} // PROFILE_SCOPE("Loop iteration") will end here and then restart at the end of each loop
+    for (auto o : objectsVector)
+    {
+      PROFILE_SCOPE("Loop iteration");
+      // do something here
+      
+    }// PROFILE_SCOPE("Loop iteration") will end here and then restart at the end of each loop
 
-	} // PROFILE_SCOPE("Scope1") will end here when our added scope ends
+  } // PROFILE_SCOPE("Scope1") will end here when our added scope ends
 
 } // PROFILE_FUNCTION() will end here at the end of the functions scope
 ```
