@@ -3,6 +3,8 @@
 #include "Common.h"
 #include "Components.h"
 
+enum class Tag { player, bullet, tile, decoration, };
+
 class Entity;
 
 typedef std::tuple<
@@ -22,7 +24,7 @@ class EntityMemoryPool
 {
 	long long					m_numEntities;
 	EntityComponentVectorTuple	m_pool;
-	std::vector<std::string>	m_tags;
+	std::vector<Tag>	m_tags;
 	std::vector<bool>			m_active;
 	EntityMemoryPool(size_t maxEntities);
 
@@ -35,13 +37,13 @@ public:
 		return pool;
 	}
 
-	const std::string& getTag(size_t entityID) const;
+	const Tag getTag(size_t entityID) const;
 
 	const bool isActive(size_t entityID) const;
 
 	size_t getNextEntityIndex();
 
-	Entity addEntity(const std::string& tag);
+	Entity addEntity(const Tag tag);
 
 	void destroyEntity(size_t entityID);
 

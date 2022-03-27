@@ -15,10 +15,10 @@ class Entity
 	Entity(const size_t id);
 
 public:
-	void				destroy();
-	size_t				id()		const;
-	bool				isActive()	const;
-	const std::string&	tag()		const;
+	void destroy();
+	size_t id()	const;
+	bool isActive()	const;
+	const Tag tag() const;
 
 	template <typename T>
 	bool hasComponent() const

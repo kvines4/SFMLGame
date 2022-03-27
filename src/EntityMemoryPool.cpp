@@ -5,7 +5,7 @@ EntityMemoryPool::EntityMemoryPool(size_t maxEntities)
 {
 	m_numEntities = 0;
 	m_active = std::vector<bool>(maxEntities, false);
-	m_tags = std::vector<std::string>(maxEntities);
+	m_tags = std::vector<Tag>(maxEntities);
 	m_pool = {
 			std::vector<CTransform>	 (maxEntities),
 			std::vector<CLifespan>	 (maxEntities),
@@ -18,7 +18,7 @@ EntityMemoryPool::EntityMemoryPool(size_t maxEntities)
 	};
 }
 
-const std::string& EntityMemoryPool::getTag(size_t entityID) const
+const Tag EntityMemoryPool::getTag(size_t entityID) const
 {
 	return m_tags[entityID];
 }
@@ -41,7 +41,7 @@ size_t EntityMemoryPool::getNextEntityIndex()
 		: -1;
 }
 
-Entity EntityMemoryPool::addEntity(const std::string& tag)
+Entity EntityMemoryPool::addEntity(const Tag tag)
 {
 	size_t index = getNextEntityIndex();
 

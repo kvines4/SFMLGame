@@ -68,7 +68,7 @@ void Scene_Play::loadLevel(const std::string& filename)
 		if (str == "Tile")
 		{
 			file >> str >> x >> y;
-			Entity tile = m_entityManager.addEntity("tile");
+			Entity tile = m_entityManager.addEntity(Tag::tile);
 			tile.addComponent<CAnimation>(m_game->assets().getAnimation(str), true);
 			tile.addComponent<CTransform>(gridToMidPixel(x, y, tile));
 			tile.addComponent<CBoundingBox>(tile.getComponent<CAnimation>().animation.getSize());
@@ -77,7 +77,7 @@ void Scene_Play::loadLevel(const std::string& filename)
 		else if (str == "Dec")
 		{
 			file >> str >> x >> y;
-			Entity dec = m_entityManager.addEntity("dec");
+			Entity dec = m_entityManager.addEntity(Tag::decoration);
 			dec.addComponent<CAnimation>(m_game->assets().getAnimation(str), true);
 			dec.addComponent<CTransform>(gridToMidPixel(x, y, dec));
 			dec.addComponent<CDraggable>();
@@ -101,9 +101,9 @@ void Scene_Play::spawnPlayer()
 {
 	PROFILE_FUNCTION();
 
-	for (Entity entity : m_entityManager.getEntities("player")) { entity.destroy(); }
+	for (Entity entity : m_entityManager.getEntities(Tag::player)) { entity.destroy(); }
 
-	Entity player = m_entityManager.addEntity("player");
+	Entity player = m_entityManager.addEntity(Tag::player);
 	player.addComponent<CAnimation>(m_game->assets().getAnimation("Air"), true);
 	player.addComponent<CTransform>(gridToMidPixel(m_playerConfig.X, m_playerConfig.Y, player));
 	player.addComponent<CInput>();
@@ -127,7 +127,7 @@ void Scene_Play::hitBlock(Entity entity)
 	{
 		tAnimation.animation = m_game->assets().getAnimation("Question2");
 
-		Entity dec = m_entityManager.addEntity("dec");
+		Entity dec = m_entityManager.addEntity(Tag::decoration);
 		dec.addComponent<CAnimation>(m_game->assets().getAnimation("Coin"), false);
 		dec.addComponent<CTransform>(Vec2(tTransform.pos.x, tTransform.pos.y - m_gridSize.y));
 	}
@@ -136,7 +136,7 @@ void Scene_Play::hitBlock(Entity entity)
 void Scene_Play::spawnBullet(Entity entity)
 {
 	auto& transform = entity.getComponent<CTransform>();
-	Entity bullet	= m_entityManager.addEntity("bullet");
+	Entity bullet	= m_entityManager.addEntity(Tag::bullet);
 	bullet.addComponent<CTransform>(transform.pos, Vec2(12 * transform.scale.x, 0), transform.scale, 0.0f);
 	bullet.addComponent<CAnimation>(m_game->assets().getAnimation(m_playerConfig.WEAPON), true);
 	bullet.addComponent<CBoundingBox>(bullet.getComponent<CAnimation>().animation.getSize());
@@ -163,7 +163,7 @@ void Scene_Play::sMovement()
 {
 	PROFILE_FUNCTION();
 
-	Entity player = m_entityManager.getEntities("player")[0];
+	Entity player = m_entityManager.getEntities(Tag::player)[0];
 
 	auto& pTransform = player.getComponent<CTransform>();
 	auto& pInput	 = player.getComponent<CInput>();
@@ -259,12 +259,12 @@ void Scene_Play::sCollision()
 {
 	PROFILE_FUNCTION();
 	
-	const EntityVec& tiles = m_entityManager.getEntities("tile");
+	const EntityVec& tiles = m_entityManager.getEntities(Tag::tile);
 
 	{
 		PROFILE_SCOPE("Bullet/Tile Collisions");
 
-		auto& bullets = m_entityManager.getEntities("bullet");
+		auto& bullets = m_entityManager.getEntities(Tag::bullet);
 		for (Entity bullet : bullets)
 		{
 			for (Entity tile : tiles)
@@ -288,7 +288,7 @@ void Scene_Play::sCollision()
 	{
 		PROFILE_SCOPE("Player/Tile Collisions");
 
-		Entity player = m_entityManager.getEntities("player")[0];
+		Entity player = m_entityManager.getEntities(Tag::player)[0];
 		auto& pTransform = player.getComponent<CTransform>();
 		auto& pState = player.getComponent<CState>();
 		auto& pBoundingBox = player.getComponent<CBoundingBox>();
@@ -352,7 +352,7 @@ void Scene_Play::sDoAction(Action action)
 {
 	PROFILE_FUNCTION();
 
-	Entity player	 = m_entityManager.getEntities("player")[0];
+	Entity player	 = m_entityManager.getEntities(Tag::player)[0];
 	auto& pInput	 = player.getComponent<CInput>();
 	auto& pState	 = player.getComponent<CState>();
 	auto& pTransform = player.getComponent<CTransform>();
@@ -436,7 +436,7 @@ void Scene_Play::sAnimation()
 {
 	PROFILE_FUNCTION();
 
-	Entity player = m_entityManager.getEntities("player")[0];
+	Entity player = m_entityManager.getEntities(Tag::player)[0];
 	auto& pState	 = player.getComponent<CState>();
 	auto& pAnimation = player.getComponent<CAnimation>();
 
@@ -492,7 +492,7 @@ void Scene_Play::sRender()
 {
 	PROFILE_FUNCTION();
 
-	Entity player = m_entityManager.getEntities("player")[0];
+	Entity player = m_entityManager.getEntities(Tag::player)[0];
 
 	// color the background darker so you know that the game is paused
 	if (!m_paused) { m_game->window().clear(sf::Color(100, 100, 255)); }

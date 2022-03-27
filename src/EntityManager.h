@@ -4,8 +4,8 @@
 #include "Entity.h"
 #include "EntityMemoryPool.h"
 
-typedef std::vector<Entity>					EntityVec;
-typedef std::map<std::string, EntityVec>	EntityMap;
+typedef std::vector<Entity>			EntityVec;
+typedef std::map<Tag, EntityVec>	EntityMap;
 
 class EntityManager
 {
@@ -21,9 +21,9 @@ public:
 
 	void update();
 
-	Entity addEntity(const std::string& tag);
+	Entity addEntity(const Tag tag);
 
 	const EntityVec& getEntities();
-	const EntityVec& getEntities(const std::string& tag);
+	const EntityVec& getEntities(const Tag tag);
 	const size_t getTotal() const;
 };

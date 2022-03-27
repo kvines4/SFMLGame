@@ -12,7 +12,7 @@ bool Entity::isActive() const
 	return EntityMemoryPool::Instance().isActive(m_id);
 }
 
-const std::string& Entity::tag() const
+const Tag Entity::tag() const
 {
 	return EntityMemoryPool::Instance().getTag(m_id);
 }
